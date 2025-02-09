@@ -1,7 +1,24 @@
 {
-    "version": 2,
     "routes": [
-      { "src": "/api/images", "dest": "/api/images.js" },
-      { "src": "/", "dest": "/" }
+        {
+            "src": "/",
+            "dest": "api/ind.js"
+        },
+        {
+            "src": "api/images",
+            "methods": [
+                "POST",
+                "GET"
+            ],
+            "dest": "/api/images.js"
+        },
+        {
+            "src": "api/upload",
+            "methods": [
+                "POST",
+                "GET"
+            ],
+            "dest": "/api/upload.js"
+        }
     ]
-  }
+}

@@ -1,33 +1,30 @@
-import { connectToDatabase } from '../lib/mongodb';
+import { connectToDatabase } from '../lib/connectToDatabase.js';
 
 export const config = { maxDuration: 15 };
 
 export default async (req, res) => {
-  // Add CORS headers
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET');
 
-  if (req.method === 'GET') {
-    try {
-      const { db } = await connectToDatabase();
-      const page = parseInt(req.query.page) || 1;
-      const limit = parseInt(req.query.limit) || 1;
-      const skip = (page - 1) * limit;
-
-      const images = await db.collection('images')
-        .find({})
-        .skip(skip)
-        .limit(limit)
-        .toArray();
-
-      const totalImages = await db.collection('images').countDocuments();
-      const totalPages = Math.ceil(totalImages / limit);
-
-      res.status(200).json({ images, totalPages, currentPage: page });
-    } catch (error) {
-      res.status(500).json({ error: error.message });
+  // Set CORS headers
+  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3001');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  
+  try {
+    if (req.method !== 'GET') {
+      return res.status(405).json({ error: 'Method not allowed' });
     }
-  } else {
-    res.status(405).json({ error: 'Method not allowed' });
+
+    // Connect inside the handler
+    const { db } = await connectToDatabase();
+    
+    // Get images collection
+    const images = await db.collection('images').find().toArray();
+
+    return res.status(200).json(images);
+  } catch (error) {
+    console.error('API Error:', error);
+    return res.status(500).json({ 
+      error: error.message || 'Failed to fetch images' 
+    });
   }
 };

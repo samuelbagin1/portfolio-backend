@@ -10,7 +10,16 @@ export const config = {
 
 export default async (req, res) => {
   // Set CORS headers
-  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3001', 'http://samuelbagin.xyz');
+  const allowedOrigins = [
+    'http://localhost:3000', // Local development
+    'https://head.samuelbagin.xyz' // Production
+  ];
+  
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+  }
+
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 

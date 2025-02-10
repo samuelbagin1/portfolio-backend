@@ -19,15 +19,12 @@
   },
   "homepage": "https://github.com/samuelbagin1/portfolio-backend#readme",
   "dependencies": {
-    "cloudinary": "^2.5.1",
-    "streamifier": "^0.1.1",
     "@vercel/node": "^28.4.0",
-    "mongodb": "^5.7.0"
+    "cloudinary": "^2.5.1",
+    "mongodb": "^5.9.2",
+    "streamifier": "^0.1.1"
   },
   "devDependencies": {
     "@vercel/node": "^5.1.2"
-  },
-  "engines": {
-    "node": "18.x"
   }
 }

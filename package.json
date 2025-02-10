@@ -21,6 +21,7 @@
   "dependencies": {
     "@vercel/node": "^28.4.0",
     "cloudinary": "^2.5.1",
+    "formidable": "^3.5.2",
     "mongodb": "^5.9.2",
     "streamifier": "^0.1.1"
   },

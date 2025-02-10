@@ -5,7 +5,16 @@ export const config = { maxDuration: 15 };
 export default async (req, res) => {
 
   // Set CORS headers
-  res.setHeader('Access-Control-Allow-Origin', 'https://head.samuelbagin.xyz/portfolio/photo');
+  const allowedOrigins = [
+    'http://localhost:3000', // Local development
+    'https://head.samuelbagin.xyz' // Production
+  ];
+  
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+  }
+
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 

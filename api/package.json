@@ -1,0 +1,30 @@
+{
+  "name": "portfolio-backend",
+  "version": "1.0.0",
+  "description": "",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "vercel dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/samuelbagin1/portfolio-backend.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/samuelbagin1/portfolio-backend/issues"
+  },
+  "homepage": "https://github.com/samuelbagin1/portfolio-backend#readme",
+  "dependencies": {
+    "cloudinary": "^2.5.1",
+    "streamifier": "^0.1.1",
+    "@vercel/node": "^28.4.0"
+  },
+  "devDependencies": {
+    "@vercel/node": "^5.1.2"
+  }
+}

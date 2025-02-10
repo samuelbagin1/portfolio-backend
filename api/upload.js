@@ -9,6 +9,11 @@ export const config = {
 };
 
 export default async (req, res) => {
+  // Set CORS headers
+  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3001', 'http://samuelbagin.xyz');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }

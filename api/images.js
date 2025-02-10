@@ -5,10 +5,10 @@ export const config = { maxDuration: 15 };
 export default async (req, res) => {
 
   // Set CORS headers
-  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3001');
+  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3001', 'http://samuelbagin.xyz');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  
+
   try {
     if (req.method !== 'GET') {
       return res.status(405).json({ error: 'Method not allowed' });

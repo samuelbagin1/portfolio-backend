@@ -8,30 +8,26 @@ export const config = {
   },
 };
 
-const setCorsHeaders = (req, res) => {
-  const allowedOrigins = [
-    'http://localhost:3000',
-    'https://head.samuelbagin.xyz'
-  ];
-  
+cloudinary.config({ 
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
+});
+
+export default async (req, res) => {
+  // CORS headers setup
+  const allowedOrigins = ['http://localhost:3000', 'https://head.samuelbagin.xyz'];
   const origin = req.headers.origin;
+  
   if (allowedOrigins.includes(origin)) {
     res.setHeader('Access-Control-Allow-Origin', origin);
   }
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  res.setHeader('Vary', 'Origin'); // Important for caching
-};
+  res.setHeader('Access-Control-Allow-Methods', 'POST');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
-export default async (req, res) => {
-  // Handle OPTIONS preflight first
   if (req.method === 'OPTIONS') {
-    setCorsHeaders(req, res);
     return res.status(200).end();
   }
-
-  // Set CORS headers for actual request
-  setCorsHeaders(req, res);
 
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
@@ -40,38 +36,44 @@ export default async (req, res) => {
   try {
     const form = new IncomingForm();
 
-    // Wrap form.parse in a promise
-    const { fields, files } = await new Promise((resolve, reject) => {
+    // Parse form data
+    const [fields, files] = await new Promise((resolve, reject) => {
       form.parse(req, (err, fields, files) => {
         if (err) reject(err);
-        resolve({ fields, files });
+        resolve([fields, files]);
       });
     });
 
-    if (!files.photo) {
+    // Validate file upload
+    if (!files.photo || !files.photo[0]) {
       return res.status(400).json({ error: 'No file uploaded' });
     }
 
-    // Upload to Cloudinary
-    const result = await cloudinary.v2.uploader.upload(files.photo.path, {
+    const file = files.photo[0];
+
+    // Upload to Cloudinary using buffer
+    const result = await cloudinary.v2.uploader.upload(file.filepath, {
       folder: 'test',
+      resource_type: 'auto',
+      use_filename: true,
     });
 
     // Save to MongoDB
     const { db } = await connectToDatabase();
-    const image = {
-      text: fields.text,
+    const imageDoc = {
+      text: fields.text[0],
       photo: result.secure_url,
+      createdAt: new Date(),
     };
-    
-    await db.collection('images').insertOne(image);
 
-    return res.status(201).json(image);
+    await db.collection('images').insertOne(imageDoc);
+
+    return res.status(201).json(imageDoc);
 
   } catch (error) {
     console.error('Upload Error:', error);
-    return res.status(500).json({ 
-      error: error.message || 'Internal server error',
+    return res.status(error.http_code || 500).json({ 
+      error: error.message,
       details: error.stack 
     });
   }

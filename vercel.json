@@ -19,6 +19,15 @@
                 "GET"
             ],
             "dest": "/api/upload.js"
+        },
+        {
+            "src": "api/delete",
+            "methods": [
+                "POST",
+                "GET",
+                "DELETE"
+            ],
+            "dest": "/api/delete.js"
         }
     ]
 }

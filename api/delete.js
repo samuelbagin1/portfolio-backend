@@ -1,65 +1,73 @@
-import { connectToDatabase } from '../lib/connectToDatabase';
+import { connectToDatabase, ObjectId } from '../lib/connectToDatabase.js';
 import cloudinary from 'cloudinary';
 
-cloudinary.config({
-    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-    api_key: process.env.CLOUDINARY_API_KEY,
-    api_secret: process.env.CLOUDINARY_API_SECRET
+cloudinary.config({ 
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
 export default async (req, res) => {
-    // CORS Configuration
-    const allowedOrigins = ['http://localhost:3000', 'https://head.samuelbagin.xyz'];
-    const origin = req.headers.origin;
+  // CORS Configuration
+  const allowedOrigins = ['http://localhost:3000', 'https://head.samuelbagin.xyz'];
+  const origin = req.headers.origin;
+  
+  res.setHeader('Access-Control-Allow-Origin', allowedOrigins.includes(origin) ? origin : '');
+  res.setHeader('Access-Control-Allow-Methods', 'DELETE');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Vary', 'Origin');
 
-    res.setHeader('Access-Control-Allow-Methods', 'DELETE');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  if (req.method === 'OPTIONS') {
+    return res.status(204).end();
+  }
 
-    if (allowedOrigins.includes(origin)) {
-        res.setHeader('Access-Control-Allow-Origin', origin);
+  if (req.method !== 'DELETE') {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
+
+  try {
+    const { id, publicId } = req.body;
+    console.log('Deletion request for:', { id, publicId });
+
+    // Validate input
+    if (!id || !publicId) {
+      return res.status(400).json({ error: 'Missing required fields' });
     }
 
-    if (req.method === 'OPTIONS') {
-        return res.status(200).end();
+    // Convert string ID to MongoDB ObjectId
+    const objectId = new ObjectId(id);
+
+    // Delete from MongoDB first
+    const { db } = await connectToDatabase();
+    const deleteResult = await db.collection('images').deleteOne({ 
+      _id: objectId,
+      publicId: publicId 
+    });
+
+    console.log('MongoDB deletion result:', deleteResult);
+
+    if (deleteResult.deletedCount === 0) {
+      return res.status(404).json({ error: 'Image not found in database' });
     }
 
-    if (req.method !== 'DELETE') {
-        return res.status(405).json({ error: 'Method not allowed' });
-    }
+    // Delete from Cloudinary after successful DB deletion
+    const cloudinaryResult = await cloudinary.v2.uploader.destroy(publicId);
+    console.log('Cloudinary deletion result:', cloudinaryResult);
 
-    try {
+    return res.status(200).json({ 
+      success: true,
+      cloudinary: cloudinaryResult 
+    });
 
-        const { id, publicId } = req.body;
-
-        // Add better validation
-        if (!id || typeof id !== 'string') {
-            return res.status(400).json({ error: 'Invalid image ID' });
-        }
-
-        if (!publicId || typeof publicId !== 'string') {
-            return res.status(400).json({ error: 'Invalid Cloudinary ID' });
-        }
-
-        // Delete from Cloudinary
-        const cloudinaryResult = await cloudinary.v2.uploader.destroy(publicId);
-        if (cloudinaryResult.result !== 'ok') {
-            throw new Error('Failed to delete from Cloudinary');
-        }
-
-        // Delete from MongoDB
-        const { db } = await connectToDatabase();
-        const deleteResult = await db.collection('images').deleteOne({ _id: id });
-
-        if (deleteResult.deletedCount === 0) {
-            return res.status(404).json({ error: 'Image not found' });
-        }
-
-        return res.status(200).json({ success: true });
-    } catch (error) {
-        console.error('Delete Error:', error);
-        return res.status(500).json({
-            error: error.message || 'Internal server error',
-            details: error.stack
-        });
-    }
+  } catch (error) {
+    console.error('Delete Error:', {
+      message: error.message,
+      stack: error.stack,
+      rawBody: req.body
+    });
+    return res.status(500).json({ 
+      error: error.message || 'Internal server error',
+      details: error.stack 
+    });
+  }
 };

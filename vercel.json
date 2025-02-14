@@ -27,7 +27,13 @@
                 "GET",
                 "DELETE"
             ],
-            "dest": "/api/delete.js"
+            "dest": "/api/delete.js",
+            "headers": [
+                { "key": "Access-Control-Allow-Origin", "value": "https://head.samuelbagin.xyz" },
+                { "key": "Access-Control-Allow-Methods", "value": "DELETE" },
+                { "key": "Access-Control-Allow-Headers", "value": "Content-Type, Authorization" },
+                { "key": "Access-Control-Allow-Credentials", "value": "true" }
+              ]
         }
     ]
 }

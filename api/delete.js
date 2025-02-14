@@ -14,9 +14,11 @@ export default async (req, res) => {
   
   res.setHeader('Access-Control-Allow-Origin', allowedOrigins.includes(origin) ? origin : '');
   res.setHeader('Access-Control-Allow-Methods', 'DELETE');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
   res.setHeader('Vary', 'Origin');
 
+  // Handle preflight request
   if (req.method === 'OPTIONS') {
     return res.status(204).end();
   }
@@ -27,43 +29,42 @@ export default async (req, res) => {
 
   try {
     const { id, publicId } = req.body;
-    console.log('Deletion request for:', { id, publicId });
+    console.log('Deletion request:', { id, publicId });
 
     // Validate input
     if (!id || !publicId) {
       return res.status(400).json({ error: 'Missing required fields' });
     }
 
-    // Convert string ID to MongoDB ObjectId
+    // Convert to ObjectId
     const objectId = new ObjectId(id);
 
-    // Delete from MongoDB first
     const { db } = await connectToDatabase();
+
+    // 1. Delete from MongoDB
     const deleteResult = await db.collection('images').deleteOne({ 
       _id: objectId,
-      publicId: publicId 
+      publicId: publicId
     });
 
-    console.log('MongoDB deletion result:', deleteResult);
-
     if (deleteResult.deletedCount === 0) {
-      return res.status(404).json({ error: 'Image not found in database' });
+      return res.status(404).json({ error: 'Image not found' });
     }
 
-    // Delete from Cloudinary after successful DB deletion
-    const cloudinaryResult = await cloudinary.v2.uploader.destroy(publicId);
-    console.log('Cloudinary deletion result:', cloudinaryResult);
+    // 2. Delete from Cloudinary
+    const cloudResult = await cloudinary.v2.uploader.destroy(publicId);
+    console.log('Cloudinary deletion result:', cloudResult);
 
     return res.status(200).json({ 
       success: true,
-      cloudinary: cloudinaryResult 
+      cloudinary: cloudResult 
     });
 
   } catch (error) {
     console.error('Delete Error:', {
-      message: error.message,
+      error: error.message,
       stack: error.stack,
-      rawBody: req.body
+      body: req.body
     });
     return res.status(500).json({ 
       error: error.message || 'Internal server error',

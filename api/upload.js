@@ -64,6 +64,8 @@ export default async (req, res) => {
       text: fields.text[0],
       photo: result.secure_url,
       createdAt: new Date(),
+      publicId: result.public_id, // Make sure this is stored
+      _id: new ObjectId() // Explicit ID creation
     };
 
     await db.collection('images').insertOne(imageDoc);

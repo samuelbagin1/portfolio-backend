@@ -55,6 +55,15 @@
                 "DELETE"
             ],
             "dest": "/api/video.js"
+        },
+        {
+            "src": "api/photo",
+            "methods": [
+                "GET",
+                "POST",
+                "DELETE"
+            ],
+            "dest": "/api/photo.js"
         }
     ]
 }

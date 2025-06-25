@@ -28,6 +28,33 @@
                 "DELETE"
             ],
             "dest": "/api/delete.js"
+        },
+        {
+            "src": "api/develop",
+            "methods": [
+                "GET",
+                "POST",
+                "DELETE"
+            ],
+            "dest": "/api/develop.js"
+        },
+        {
+            "src": "api/graphic",
+            "methods": [
+                "GET",
+                "POST",
+                "DELETE"
+            ],
+            "dest": "/api/graphic.js"
+        },
+        {
+            "src": "api/video",
+            "methods": [
+                "GET",
+                "POST",
+                "DELETE"
+            ],
+            "dest": "/api/video.js"
         }
     ]
 }

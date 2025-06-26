@@ -5,31 +5,6 @@
             "dest": "api/ind.js"
         },
         {
-            "src": "api/images",
-            "methods": [
-                "POST",
-                "GET"
-            ],
-            "dest": "/api/images.js"
-        },
-        {
-            "src": "api/upload",
-            "methods": [
-                "POST",
-                "GET"
-            ],
-            "dest": "/api/upload.js"
-        },
-        {
-            "src": "api/delete",
-            "methods": [
-                "POST",
-                "GET",
-                "DELETE"
-            ],
-            "dest": "/api/delete.js"
-        },
-        {
             "src": "api/develop",
             "methods": [
                 "GET",

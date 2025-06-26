@@ -4,7 +4,7 @@ export const config = { maxDuration: 15 };
 
 export default async (req, res) => {
   // CORS Configuration
-  const allowedOrigins = ['http://localhost:3000', 'https://head.samuelbagin.xyz'];
+  const allowedOrigins = ['http://localhost:3000', 'https://head.samuelbagin.xyz', 'https://samuelbagin.com'];
   const origin = req.headers.origin;
   
   res.setHeader('Access-Control-Allow-Origin', allowedOrigins.includes(origin) ? origin : '');

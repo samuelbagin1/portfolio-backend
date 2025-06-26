@@ -17,7 +17,7 @@ cloudinary.config({
 
 export default async (req, res) => {
   // CORS Configuration
-  const allowedOrigins = ['http://localhost:3000', 'https://head.samuelbagin.xyz', 'https://samuelbagin.com'];
+  const allowedOrigins = ['http://localhost:3000', 'https://head.samuelbagin.xyz', 'https://samuelbagin.xyz'];
   const origin = req.headers.origin;
   
   res.setHeader('Access-Control-Allow-Origin', allowedOrigins.includes(origin) ? origin : '');

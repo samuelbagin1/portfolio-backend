@@ -9,7 +9,7 @@ export const config = {
   maxDuration: 15
 };
 
-cloudinary.config({ 
+cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET
@@ -19,7 +19,7 @@ export default async (req, res) => {
   // CORS Configuration
   const allowedOrigins = ['http://localhost:3000', 'https://head.samuelbagin.xyz', 'https://samuelbagin.xyz'];
   const origin = req.headers.origin;
-  
+
   res.setHeader('Access-Control-Allow-Origin', allowedOrigins.includes(origin) ? origin : '');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, DELETE, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
@@ -63,6 +63,12 @@ export default async (req, res) => {
         folder: 'graphic',
         resource_type: 'auto',
         use_filename: true,
+        width: 1350,              // Resize to 1350px width
+        format: 'webp',           // Convert to WebP format
+        quality: 'auto:good',     // Automatic quality optimization
+        crop: 'limit',            // Only resize if larger (won't upscale)
+        fetch_format: 'auto',     // Best format for browser
+        flags: 'progressive'      // Progressive loading
       });
 
       // Save to MongoDB
@@ -98,7 +104,7 @@ export default async (req, res) => {
             const objectId = new ObjectId(id);
 
             // Delete from MongoDB
-            const deleteResult = await db.collection('graphic').deleteOne({ 
+            const deleteResult = await db.collection('graphic').deleteOne({
               _id: objectId,
               publicId: publicId
             });
@@ -111,16 +117,16 @@ export default async (req, res) => {
             const cloudResult = await cloudinary.v2.uploader.destroy(publicId);
             console.log('Cloudinary deletion result:', cloudResult);
 
-            return resolve(res.status(200).json({ 
+            return resolve(res.status(200).json({
               success: true,
-              cloudinary: cloudResult 
+              cloudinary: cloudResult
             }));
 
           } catch (error) {
             console.error('Delete Error:', error);
-            return resolve(res.status(500).json({ 
+            return resolve(res.status(500).json({
               error: error.message || 'Internal server error',
-              details: error.stack 
+              details: error.stack
             }));
           }
         });
@@ -132,9 +138,9 @@ export default async (req, res) => {
 
   } catch (error) {
     console.error('Graphic API Error:', error);
-    return res.status(500).json({ 
+    return res.status(500).json({
       error: error.message || 'Internal server error',
-      details: error.stack 
+      details: error.stack
     });
   }
 };

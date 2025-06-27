@@ -63,7 +63,7 @@ export default async (req, res) => {
         folder: 'graphic',
         resource_type: 'auto',
         use_filename: true,
-        width: 1350,              // Resize to 1350px width
+        width: 2000,              // Resize to 1350px width
         format: 'webp',           // Convert to WebP format
         quality: 'auto:good',     // Automatic quality optimization
         crop: 'limit',            // Only resize if larger (won't upscale)

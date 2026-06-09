@@ -348,13 +348,18 @@ const openApiDocument = {
             'multipart/form-data': {
               schema: {
                 type: 'object',
-                required: ['title', 'text', 'linkText', 'image'],
+                required: ['title', 'shortText', 'text', 'linkText', 'image'],
                 properties: {
                   title: {
                     type: 'string'
                   },
+                  shortText: {
+                    type: 'string',
+                    description: 'Short project summary'
+                  },
                   text: {
-                    type: 'string'
+                    type: 'string',
+                    description: 'Project body stored as plain text; Markdown syntax is accepted'
                   },
                   linkText: {
                     type: 'string'
@@ -622,7 +627,7 @@ const openApiDocument = {
       },
       Develop: {
         type: 'object',
-        required: ['_id', 'title', 'text', 'linkText', 'image', 'publicId', 'createdAt'],
+        required: ['_id', 'title', 'shortText', 'text', 'linkText', 'image', 'publicId', 'createdAt'],
         properties: {
           _id: {
             $ref: '#/components/schemas/MongoId'
@@ -630,8 +635,13 @@ const openApiDocument = {
           title: {
             type: 'string'
           },
+          shortText: {
+            type: 'string',
+            description: 'Short project summary'
+          },
           text: {
-            type: 'string'
+            type: 'string',
+            description: 'Project body stored as plain text; Markdown syntax is accepted'
           },
           linkText: {
             type: 'string'

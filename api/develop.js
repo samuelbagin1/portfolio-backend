@@ -58,12 +58,13 @@ export default async (req, res) => {
 
       // Validate required fields
       const title = fields.title?.[0];
+      const shortText = fields.shortText?.[0];
       const text = fields.text?.[0];
       const linkText = fields.linkText?.[0];
 
-      if (!title || !text || !linkText) {
+      if (!title || !shortText || !text || !linkText) {
         return res.status(400).json({
-          error: 'Title, text, and link text are required for develop content'
+          error: 'Title, short text, text, and link text are required for develop content'
         });
       }
 
@@ -89,6 +90,7 @@ export default async (req, res) => {
       // Save to MongoDB
       const developDoc = {
         title,
+        shortText,
         text,
         linkText,
         image: result.secure_url,

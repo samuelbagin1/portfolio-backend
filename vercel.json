@@ -5,38 +5,58 @@
             "dest": "api/ind.js"
         },
         {
-            "src": "api/develop",
+            "src": "/api/auth",
+            "methods": [
+                "POST",
+                "OPTIONS"
+            ],
+            "dest": "/api/auth.js"
+        },
+        {
+            "src": "/api/doc",
+            "methods": [
+                "GET",
+                "OPTIONS"
+            ],
+            "dest": "/api/doc.js"
+        },
+        {
+            "src": "/api/develop",
             "methods": [
                 "GET",
                 "POST",
-                "DELETE"
+                "DELETE",
+                "OPTIONS"
             ],
             "dest": "/api/develop.js"
         },
         {
-            "src": "api/graphic",
+            "src": "/api/graphic",
             "methods": [
                 "GET",
                 "POST",
-                "DELETE"
+                "DELETE",
+                "OPTIONS"
             ],
             "dest": "/api/graphic.js"
         },
         {
-            "src": "api/video",
+            "src": "/api/video",
             "methods": [
                 "GET",
                 "POST",
-                "DELETE"
+                "DELETE",
+                "OPTIONS"
             ],
             "dest": "/api/video.js"
         },
         {
-            "src": "api/photo",
+            "src": "/api/photo",
             "methods": [
                 "GET",
                 "POST",
-                "DELETE"
+                "DELETE",
+                "OPTIONS"
             ],
             "dest": "/api/photo.js"
         }

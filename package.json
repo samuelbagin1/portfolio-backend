@@ -20,8 +20,10 @@
   "homepage": "https://github.com/samuelbagin1/portfolio-backend#readme",
   "dependencies": {
     "@vercel/node": "^28.4.0",
+    "bcryptjs": "^3.0.3",
     "cloudinary": "^2.5.1",
     "formidable": "^3.5.2",
+    "jsonwebtoken": "^9.0.3",
     "mongodb": "^5.9.2",
     "streamifier": "^0.1.1"
   },

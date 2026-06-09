@@ -1,4 +1,5 @@
 import { connectToDatabase, ObjectId } from '../lib/connectToDatabase.js';
+import { authorizeAdmin } from './auth.js';
 
 export const config = { maxDuration: 15 };
 
@@ -16,6 +17,10 @@ export default async (req, res) => {
   // Handle preflight request
   if (req.method === 'OPTIONS') {
     return res.status(204).end();
+  }
+
+  if ((req.method === 'POST' || req.method === 'DELETE') && !authorizeAdmin(req, res)) {
+    return;
   }
 
   try {

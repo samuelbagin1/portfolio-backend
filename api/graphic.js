@@ -1,6 +1,7 @@
 import { connectToDatabase, ObjectId } from '../lib/connectToDatabase.js';
 import { IncomingForm } from 'formidable';
 import cloudinary from 'cloudinary';
+import { authorizeAdmin } from './auth.js';
 
 export const config = {
   api: {
@@ -29,6 +30,10 @@ export default async (req, res) => {
   // Handle preflight request
   if (req.method === 'OPTIONS') {
     return res.status(204).end();
+  }
+
+  if ((req.method === 'POST' || req.method === 'DELETE') && !authorizeAdmin(req, res)) {
+    return;
   }
 
   try {

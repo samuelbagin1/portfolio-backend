@@ -25,6 +25,7 @@
     "formidable": "^3.5.2",
     "jsonwebtoken": "^9.0.3",
     "mongodb": "^5.9.2",
+    "postcss": "^8.5.15",
     "streamifier": "^0.1.1"
   },
   "devDependencies": {

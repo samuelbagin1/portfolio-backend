@@ -21,6 +21,15 @@
             "dest": "/api/doc.js"
         },
         {
+            "src": "/api/settings/markdown-theme",
+            "methods": [
+                "GET",
+                "PUT",
+                "OPTIONS"
+            ],
+            "dest": "/api/markdown-theme.js"
+        },
+        {
             "src": "/api/develop",
             "methods": [
                 "GET",

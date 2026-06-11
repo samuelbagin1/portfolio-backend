@@ -55,6 +55,7 @@ const openApiDocument = {
   tags: [
     { name: 'Health' },
     { name: 'Authentication' },
+    { name: 'Settings' },
     { name: 'Photos' },
     { name: 'Graphics' },
     { name: 'Develop' },
@@ -126,6 +127,88 @@ const openApiDocument = {
               }
             }
           },
+          500: errorResponse
+        }
+      }
+    },
+    '/api/settings/markdown-theme': {
+      get: {
+        tags: ['Settings'],
+        summary: 'Get the global Markdown theme',
+        description: 'Returns 404 when no custom theme is stored. Public clients should then use their bundled default Markdown theme.',
+        responses: {
+          200: {
+            description: 'Stored global Markdown theme',
+            content: {
+              'application/json': {
+                schema: {
+                  $ref: '#/components/schemas/MarkdownTheme'
+                }
+              }
+            }
+          },
+          404: {
+            description: 'No custom Markdown theme is stored',
+            content: {
+              'application/json': {
+                schema: {
+                  $ref: '#/components/schemas/Error'
+                },
+                example: {
+                  error: 'Markdown theme not found'
+                }
+              }
+            }
+          },
+          500: errorResponse
+        }
+      },
+      put: {
+        tags: ['Settings'],
+        summary: 'Replace the global Markdown theme',
+        description: 'Validates and canonicalizes CSS using the server Markdown selector and property allowlist. The server generates updatedAt.',
+        security: adminSecurity,
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                required: ['css'],
+                properties: {
+                  css: {
+                    type: 'string',
+                    maxLength: 20000,
+                    example: 'h1 { font-size: 3rem; color: #fefefa; }'
+                  }
+                }
+              }
+            }
+          }
+        },
+        responses: {
+          200: {
+            description: 'Canonicalized global Markdown theme',
+            content: {
+              'application/json': {
+                schema: {
+                  $ref: '#/components/schemas/MarkdownTheme'
+                }
+              }
+            }
+          },
+          400: {
+            description: 'Invalid CSS, disallowed rule, or oversized CSS',
+            content: {
+              'application/json': {
+                schema: {
+                  $ref: '#/components/schemas/Error'
+                }
+              }
+            }
+          },
+          401: unauthorizedResponse,
+          403: forbiddenResponse,
           500: errorResponse
         }
       }
@@ -574,6 +657,23 @@ const openApiDocument = {
             type: 'integer',
             example: 3600,
             description: 'Token lifetime in seconds'
+          }
+        }
+      },
+      MarkdownTheme: {
+        type: 'object',
+        required: ['css', 'updatedAt'],
+        properties: {
+          css: {
+            type: 'string',
+            maxLength: 20000,
+            example: 'h1 {\n  color: #fefefa;\n  font-size: 3rem;\n}'
+          },
+          updatedAt: {
+            type: 'string',
+            format: 'date-time',
+            readOnly: true,
+            example: '2026-06-11T12:00:00.000Z'
           }
         }
       },

@@ -14,6 +14,34 @@ content endpoints require an admin JWT in the `Authorization` header.
 
 Interactive Swagger API documentation is available at `/api/doc`.
 
+## Markdown theme settings
+
+The public frontend can load the singleton global Markdown theme from:
+
+```http
+GET /api/settings/markdown-theme
+```
+
+When no theme is stored, the endpoint returns `404`. If loading fails for any
+reason, public pages should use their bundled default Markdown theme.
+
+An authenticated administrator can replace the theme:
+
+```http
+PUT /api/settings/markdown-theme
+Content-Type: application/json
+Authorization: Bearer <jwt>
+
+{
+  "css": "h1 { font-size: 3rem; color: #fefefa; }"
+}
+```
+
+The server validates and canonicalizes the CSS, stores one global theme, and
+generates `updatedAt`. CSS is limited to 20,000 characters. At-rules, unknown
+Markdown selectors or properties, external/dynamic values such as `url()` and
+`var()`, custom properties, and `!important` are rejected with `400`.
+
 Configure these environment variables in Vercel:
 
 ```text

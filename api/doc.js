@@ -473,6 +473,65 @@ const openApiDocument = {
           500: errorResponse
         }
       },
+      put: {
+        tags: ['Develop'],
+        summary: 'Update a development project',
+        description: 'Preserves the existing image when no replacement is provided. When a replacement is provided, the previous Cloudinary image is deleted only after the database update succeeds.',
+        security: adminSecurity,
+        requestBody: {
+          required: true,
+          content: {
+            'multipart/form-data': {
+              schema: {
+                type: 'object',
+                required: ['id', 'title', 'shortText', 'text', 'linkText'],
+                properties: {
+                  id: {
+                    $ref: '#/components/schemas/MongoId'
+                  },
+                  title: {
+                    type: 'string'
+                  },
+                  shortText: {
+                    type: 'string',
+                    description: 'Short project summary'
+                  },
+                  text: {
+                    type: 'string',
+                    description: 'Project body stored as plain text; Markdown syntax is accepted'
+                  },
+                  linkText: {
+                    type: 'string',
+                    format: 'uri'
+                  },
+                  image: {
+                    type: 'string',
+                    format: 'binary',
+                    description: 'Optional replacement image'
+                  }
+                }
+              }
+            }
+          }
+        },
+        responses: {
+          200: {
+            description: 'Complete updated development project',
+            content: {
+              'application/json': {
+                schema: {
+                  $ref: '#/components/schemas/Develop'
+                }
+              }
+            }
+          },
+          400: errorResponse,
+          401: unauthorizedResponse,
+          403: forbiddenResponse,
+          404: errorResponse,
+          500: errorResponse
+        }
+      },
       delete: {
         tags: ['Develop'],
         summary: 'Delete a development project',
@@ -754,6 +813,10 @@ const openApiDocument = {
             type: 'string'
           },
           createdAt: {
+            type: 'string',
+            format: 'date-time'
+          },
+          updatedAt: {
             type: 'string',
             format: 'date-time'
           }

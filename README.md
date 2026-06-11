@@ -42,6 +42,22 @@ generates `updatedAt`. CSS is limited to 20,000 characters. At-rules, unknown
 Markdown selectors or properties, external/dynamic values such as `url()` and
 `var()`, custom properties, and `!important` are rejected with `400`.
 
+## Edit a development project
+
+An authenticated administrator can update a development project with
+`multipart/form-data`:
+
+```http
+PUT /api/develop
+Authorization: Bearer <jwt>
+Content-Type: multipart/form-data
+```
+
+Required fields are `id`, `title`, `shortText`, `text`, and `linkText`.
+`linkText` must be a valid HTTP or HTTPS URL. An `image` file is optional.
+Without an image, the existing Cloudinary image is preserved. With an image,
+the previous image is deleted only after the database update succeeds.
+
 Configure these environment variables in Vercel:
 
 ```text
